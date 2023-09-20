@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Counter</title>
+</head>
+<body>
+    <h1>Calories Counter</h1>
+    <div>
+        <label for="elves">Elf Name</label>
+        <input type="text" id="elfName">
+        <button onclick="addElves()">Add Elf</button><br>
+        <label for="calories">Calories</label>
+        <input type="number" id="calories">
+        <button onclick="addCalories()">Add Calories</button>
+        
+        <h2>Elf Calory List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Elf Name</th>
+                    <th>Total Calories</th>
+                    <th>Calories Accumulated</th>
+                </tr>
+            </thead>
+            <tbody id="elfList">
+            </tbody>
+        </table>
+    </div>
+
+    <script >
+
+const elves = [];
+
+function addElves(){
+    const elfName = document.getElementById('elfName').value;
+
+    if(!elfName){
+        alert("Enter a valid elf Name");
+        return;
+    }
+    
+    const elf = {name: elfName, calories:[], accumulatedCalories:[]};
+    elves.push(elf);
+
+document.getElementById("elfName").value = "";
+
+UpdateElfList();
+}
+
+function addCalories(){
+    const elfName = document.getElementById('elfName').value;
+    const calories =parseInt(document.getElementById("calories").value);
+
+    if(!elfName || isNaN(calories)){
+        alert("please input valid elf name and calories");
+        return;
+    }
+    
+    const elf = elves.find((e) => e.name === elfName);
+    if (elf){
+        elf.calories.push(calories);
+        elf.accumulatedCalories.push(calories);
+
+
+        document.getElementById("calories").value = "";
+
+        UpdateElfList();
+    }else{
+        alert("Elf Not Found")
+    }
+}
+
+
+
+function UpdateElfList(){
+    const elfList = document.getElementById("elfList");
+    elfList.innerHtml = "";
+
+    elves.forEach((elf) => {
+        const totalCalories = elf.calories.reduce((a,b) => a + b, 0 );
+        const row = document.createElement("tr");
+        row.innerHTML= `<td>${elf.name}</td> <td>${totalCalories}</td> <td>${elf.accumulatedCalories.join(", ")}</td>`;
+        elfList.appendChild(row)
+    });
+
+    if(elves.length > 0 ){
+        const maxCaloriesElf = elves.reduce((a,b) => 
+        a.calories.reduce((c ,d) => c + d, 0) >
+        b.calories.reduce((c, d) => c + d, 0) ? a : b
+         );
+
+         alert(`${maxCaloriesElf.name} has the most calories with ${maxCaloriesElf.calories.reduce((a,b)=>a + b, 0)}`)
+    }
+
+
+}
+    </script>
+</body>
+</html>
